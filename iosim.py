@@ -9,6 +9,7 @@ Usage: iosim.py [<options>] <path>
   <options>
    -h: help(this message)
    -c <size in blks>
+   -t <storage type>: default(no prefetch, lru), prefetch
 """)
 
 if __name__ == "__main__":

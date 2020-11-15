@@ -4,14 +4,15 @@ import logger
 
 path = None
 size_cache = 128
+storage_type = 'default'
 
 class Conf:
     def __init__(self, usage):
         self.usage = usage
-        self.__parseArgs("hc:")
+        self.__parseArgs("hc:t:")
 
     def __parseArgs(self, optspec):
-        global  path, size_cache
+        global  path, size_cache, storage_type
 
         try:
             opts, args = getopt.getopt(sys.argv[1:], optspec)
@@ -26,6 +27,8 @@ class Conf:
                 exit(0)
             if o == '-c':
                 size_cache = int(a)
+            elif o == '-t':
+                storage_type = a
 
         if len(args) < 1:
             logger.error("path required")
