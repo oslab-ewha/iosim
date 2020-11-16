@@ -9,7 +9,7 @@ Usage: iosim.py [<options>] <path>
   <options>
    -h: help(this message)
    -c <size in blks>
-   -t <storage type>: default(no prefetch, lru), prefetch
+   -t <storage type>: default(no prefetch, lru), prefetch, ml, rule
    -i <interval>
    -d <bmp dim>
    -L <lba max>

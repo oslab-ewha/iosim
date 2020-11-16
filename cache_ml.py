@@ -7,8 +7,8 @@ class CacheML(Cache):
         self.scores_write = {}
 
     def is_cacheable(self, pid, lba, is_read):
-        score = self.get_score(pid, is_read)
-        if score[1] > 0.5:
+        score = self.get_score(pid, True)
+        if score[0] < 0.2:
             return False
         return True
 

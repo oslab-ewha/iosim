@@ -22,6 +22,13 @@ class Cache:
                 if self.is_cacheable(pid, lba, True):
                     self.replace_cache(pid, lba)
 
+    def prefetch(self, pid, lba_base, nblks):
+        for i in range(nblks):
+            lba = lba_base + i
+            if not lba in self.pool:
+                self.disk.read(lba)
+                self.replace_cache(pid, lba)
+
     def store(self, pid, lba_base, nblks):
         for i in range(nblks):
             lba = lba_base + i

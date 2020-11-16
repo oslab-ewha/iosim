@@ -30,7 +30,7 @@ class StorageDefault:
         self.cache.store(req.pid, req.lba, req.nblks)
 
     def prefetch(self, pid, lba_base, nblks):
-        self.cache.load(pid, lba_base, nblks)
+        self.cache.prefetch(pid, lba_base, nblks)
         self.n_prefetch += nblks
 
     def report(self):
