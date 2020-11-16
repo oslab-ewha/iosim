@@ -8,3 +8,6 @@ class Disk:
 
     def write(self, lba):
         self.n_io_write += 1
+
+    def report(self):
+        print("Disk Read:{}, Disk Write:{}".format(self.n_io_read, self.n_io_write))

@@ -9,21 +9,32 @@ class StorageDefault:
         self.n_accs = 0
         self.n_accs_read = 0
         self.n_accs_write = 0
+        self.n_prefetch = 0
 
     def request(self, req):
         if req.is_read:
-            self.request_blk_read(req.lba, req.nblks)
+            self.request_blk_read(req)
         else:
-            self.request_blk_write(req.lba, req.nblks)
+            self.request_blk_write(req)
 
-    def request_blk_read(self, lba, nblks):
+    def request_blk_read(self, req):
         self.n_accs += 1
         self.n_accs_read += 1
 
-        self.cache.load(lba, nblks)
+        self.cache.load(req.pid, req.lba, req.nblks)
 
-    def request_blk_write(self, lba, nblks):
+    def request_blk_write(self, req):
         self.n_accs += 1
         self.n_accs_write += 1
 
-        self.cache.store(lba, nblks)
+        self.cache.store(req.pid, req.lba, req.nblks)
+
+    def prefetch(self, pid, lba_base, nblks):
+        self.cache.load(pid, lba_base, nblks)
+        self.n_prefetch += nblks
+
+    def report(self):
+        print("Req Read:{}, Req Write:{}".format(self.n_accs_read, self.n_accs_write))
+        print("# of prefetch: {}".format(self.n_prefetch))
+        self.cache.report()
+        self.disk.report()

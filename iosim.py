@@ -10,6 +10,11 @@ Usage: iosim.py [<options>] <path>
    -h: help(this message)
    -c <size in blks>
    -t <storage type>: default(no prefetch, lru), prefetch
+   -i <interval>
+   -d <bmp dim>
+   -L <lba max>
+   -m <model path>: for storage ml only
+   -M <model type>: for storage ml only
 """)
 
 if __name__ == "__main__":

@@ -10,4 +10,15 @@ class BIOReq:
         self.pid = int(row[2])
         self.lba =  int(row[5])
         self.nblks = int(row[6])
-        self.context = None
+
+    def isOverlappedBy(self, req):
+        last = self.lba + self.nblks - 1
+        if (self.lba >= req.lba and self.lba < req.lba + req.nblks) or \
+           (last >= req.lba and last < req.lba + req.nblks):
+            return True
+        return False
+
+    def isSeqAccessedBy(self, req):
+        if self.lba + self.nblks == req.lba:
+            return True
+        return False

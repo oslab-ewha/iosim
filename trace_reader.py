@@ -1,5 +1,4 @@
 import csv
-from trace_context import TraceContext
 from bioreq import BIOReq
 import conf
 
@@ -26,16 +25,4 @@ class TraceReader:
         while True:
             row = next(self.reader)
             if row[3] == 'I':
-                return self.__getBIOReq(row)
-
-    def __getBIOReq(self, row):
-        req = BIOReq(row)
-        ctx = TraceContext(row)
-        if ctx in self.contexts:
-            req.context = self.contexts[ctx]
-        else:
-            self.contexts[ctx] = ctx
-            req.context = ctx
-
-        req.context.add(req)
-        return req
+                return BIOReq(row)
