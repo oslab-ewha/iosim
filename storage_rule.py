@@ -9,7 +9,7 @@ class StorageRuleBased(StorageDefault):
         super().request_blk_read(req)
         last_blk = self.get_last_blk(req.pid)
         if last_blk == req.lba:
-            self.prefetch(req.pid, last_blk, req.nblks)
+            self.prefetch(req.pid, last_blk + req.nblks, req.nblks)
         self.last_blks[req.pid] = req.lba + req.nblks
 
     def get_last_blk(self, pid):

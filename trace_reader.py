@@ -24,5 +24,11 @@ class TraceReader:
     def __next__(self):
         while True:
             row = next(self.reader)
-            if row[3] == 'I':
-                return BIOReq(row)
+            if row[3] != 'I':
+                continue
+            req = BIOReq(row)
+            if req.lba == 0:
+                continue
+            if req.is_read is None:
+                continue
+            return req

@@ -11,6 +11,9 @@ class StorageDefault:
         self.n_accs_write = 0
         self.n_prefetch = 0
 
+    def flush(self):
+        self.cache.flush()
+
     def request(self, req):
         if req.is_read:
             self.request_blk_read(req)
