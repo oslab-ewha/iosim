@@ -29,6 +29,8 @@ class TraceReader:
             req = BIOReq(row)
             if req.lba == 0:
                 continue
+            if req.ts < conf.ts_start or req.ts > conf.ts_end:
+                continue
             if req.is_read is None:
                 continue
             return req

@@ -5,6 +5,8 @@ import logger
 path = None
 size_cache = 128
 storage_type = 'default'
+ts_start = 0
+ts_end = 100000000
 ts_intv = 0.0001
 width = 5
 height = 10
@@ -16,7 +18,7 @@ path_model = None
 class Conf:
     def __init__(self, usage):
         self.usage = usage
-        self.__parseArgs("hc:t:i:d:L:m:M:")
+        self.__parseArgs("hc:t:d:u:T:L:m:M:")
 
     def __parseArgs(self, optspec):
         global  path, size_cache, storage_type, ts_intv, width, height, lba_max
@@ -37,10 +39,12 @@ class Conf:
                 size_cache = int(a)
             elif o == '-t':
                 storage_type = a
-            elif o == '-i':
+            elif o == '-u':
                 ts_intv = int(a)
             elif o == '-d':
                 self.__parse_bmp_dim(a)
+            elif o == '-T':
+                self.__parse_ts_range(a)
             elif o == '-L':
                 lba_max = int(a)
             elif o == '-m':
@@ -67,6 +71,16 @@ class Conf:
             width, height = dim.split(sep='x', maxsplit=1)
             width = int(width)
             height = int(height)
+
+    def __parse_ts_range(self, range):
+        global      ts_start, ts_end
+
+        if not '-' in range:
+            ts_start = float(range)
+        else:
+            start, end = range.split(sep='-', maxsplit=1)
+            ts_start = float(start)
+            ts_end = float(end)
 
 def parse(usage_func):
     Conf(usage_func)
