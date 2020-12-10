@@ -10,6 +10,7 @@ class StorageDefault:
         self.n_accs_read = 0
         self.n_accs_write = 0
         self.n_prefetch = 0
+        self.n_prefetch_blk = 0
 
     def flush(self):
         self.cache.flush()
@@ -34,7 +35,8 @@ class StorageDefault:
 
     def prefetch(self, pid, lba_base, nblks):
         self.cache.prefetch(pid, lba_base, nblks)
-        self.n_prefetch += nblks
+        self.n_prefetch += 1
+        self.n_prefetch_blk += nblks
 
     def report(self):
         print("Req Read:{}, Req Write:{}".format(self.n_accs_read, self.n_accs_write))

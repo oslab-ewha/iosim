@@ -88,6 +88,8 @@ class Cache:
 
     def report(self):
         totals = self.n_hits + self.n_miss
-        hit = self.n_hits / totals * 100
+        hit = 0
+        if totals > 0:
+            hit = self.n_hits / totals * 100
         print("Cache Size: {}(Max Cached:{})".format(conf.size_cache, self.n_blks_cached_max))
         print("Cache Hit: {}%({}/{})".format(format(hit, ".2f"), self.n_hits, totals))

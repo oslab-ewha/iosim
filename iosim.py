@@ -10,9 +10,13 @@ Usage: iosim.py [<options>] <trace path>
    -h: help(this message)
    -c <size in blks>
    -t <storage type>: all, default(no prefetch, lru), prefetch, ml, rule
-   -d <width(time) x height(lba)>: grid dimension, only for ml
-   -u <sec>: width unit for time, only for ml
    -T <timestamp range>
+  <options for rule>
+   -p: enable per-process reference history (default: enabled)
+   -b <count>: reference history count, (default: 1)
+  <options for ml>
+   -G <width(time) x height(lba)>: grid dimension (default: 5x10)
+   -u <sec>: width unit for time (default: 0.005)
    -L <lba max>
    -m <model path>: for storage ml only
    -M <model type>: for storage ml only

@@ -12,16 +12,21 @@ width = 5
 height = 10
 lba_max = 0
 
+# rule model
+per_process_rule = False
+n_refhist = 1
+
+# ml model
 model_type = 'cnn'
 path_model = None
 
 class Conf:
     def __init__(self, usage):
         self.usage = usage
-        self.__parseArgs("hc:t:d:u:T:L:m:M:")
+        self.__parseArgs("hc:t:G:u:T:L:m:M:pb:")
 
     def __parseArgs(self, optspec):
-        global  path, size_cache, storage_type, ts_intv, width, height, lba_max
+        global  path, size_cache, storage_type, ts_intv, width, height, lba_max, per_process_rule, n_refhist
         global  model_type, path_model
 
         try:
@@ -41,7 +46,7 @@ class Conf:
                 storage_type = a
             elif o == '-u':
                 ts_intv = int(a)
-            elif o == '-d':
+            elif o == '-G':
                 self.__parse_bmp_dim(a)
             elif o == '-T':
                 self.__parse_ts_range(a)
@@ -51,16 +56,21 @@ class Conf:
                 path_model = a
             elif o == '-M':
                 model_type = a
+            elif o == '-p':
+                per_process_rule = True
+            elif o == '-b':
+                n_refhist = int(a)
 
         if len(args) < 1:
             logger.error("path required")
             exit(1)
-        if lba_max == 0:
-            logger.error("maximum lba is required")
-            exit(1)
-        if storage_type == 'ml' and path_model is None:
-            logger.error("ML storage requires a path for model")
-            exit(1)
+        if storage_type == 'ml':
+            if lba_max == 0:
+                logger.error("maximum lba is required")
+                exit(1)
+            if path_model is None:
+                logger.error("ML storage requires a path for model")
+                exit(1)
 
         path = args[0]
 

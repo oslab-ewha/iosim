@@ -1,6 +1,7 @@
 import csv
 from bioreq import BIOReq
 import conf
+import logger
 
 class TraceReader:
     def __init__(self):
