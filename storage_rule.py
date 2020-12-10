@@ -10,7 +10,7 @@ class StorageRuleBased(StorageDefault):
     def request_blk_read(self, req):
         super().request_blk_read(req)
 
-        if conf.per_process_rule:
+        if conf.per_process:
             is_seq = self.__is_sequential_proc(req)
         else:
             is_seq = self.__is_sequential(req.lba, self.last_blks)
@@ -19,7 +19,7 @@ class StorageRuleBased(StorageDefault):
                 self.prefetch(req.pid, req.lba + req.nblks, req.nblks)
 
         lba_last = req.lba + req.nblks
-        if conf.per_process_rule:
+        if conf.per_process:
             self.__set_last_blk(lba_last, self.__get_proc_last_blks(req.pid))
         else:
             self.__set_last_blk(lba_last, self.last_blks)

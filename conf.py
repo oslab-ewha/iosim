@@ -12,8 +12,9 @@ width = 5
 height = 10
 lba_max = 0
 
+per_process = False
+
 # rule model
-per_process_rule = False
 n_refhist = 1
 
 # ml model
@@ -26,7 +27,7 @@ class Conf:
         self.__parseArgs("hc:t:G:u:T:L:m:M:pb:")
 
     def __parseArgs(self, optspec):
-        global  path, size_cache, storage_type, ts_intv, width, height, lba_max, per_process_rule, n_refhist
+        global  path, size_cache, storage_type, ts_intv, width, height, lba_max, per_process, n_refhist
         global  model_type, path_model
 
         try:
@@ -57,7 +58,7 @@ class Conf:
             elif o == '-M':
                 model_type = a
             elif o == '-p':
-                per_process_rule = True
+                per_process = True
             elif o == '-b':
                 n_refhist = int(a)
 

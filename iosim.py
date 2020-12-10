@@ -12,9 +12,10 @@ Usage: iosim.py [<options>] <trace path>
    -t <storage type>: all, default(no prefetch, lru), prefetch, ml, rule
    -T <timestamp range>
   <options for rule>
-   -p: enable per-process reference history (default: enabled)
+   -p: enable per-process reference history (default: disabled)
    -b <count>: reference history count, (default: 1)
   <options for ml>
+   -p: enable per-process reference history (default: enabled)
    -G <width(time) x height(lba)>: grid dimension (default: 5x10)
    -u <sec>: width unit for time (default: 0.005)
    -L <lba max>
