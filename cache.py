@@ -4,10 +4,12 @@ from cache_policy_lru import CachePolicyLRU
 class Cache:
     def __init__(self, disk):
         self.pool = {}
+        self.prefetched = {}
         self.n_blks_cached_max = 0
         self.n_blks_cached = 0
         self.n_hits = 0
         self.n_miss = 0
+        self.n_hits_prefetch = 0
         self.disk = disk
         self.policy = CachePolicyLRU()
 
@@ -24,6 +26,10 @@ class Cache:
             if lba in self.pool:
                 self.policy.hit(lba)
                 self.n_hits += 1
+                if lba in self.prefetched:
+                    if not self.prefetched[lba]:
+                        self.prefetched[lba] = True
+                        self.n_hits_prefetch += 1
             else:
                 self.n_miss += 1
                 self.disk.read(lba)
@@ -36,6 +42,7 @@ class Cache:
             if not lba in self.pool:
                 self.disk.read(lba)
                 self.replace_cache(pid, lba)
+                self.prefetched[lba] = False
 
     def store(self, pid, lba_base, nblks):
         for i in range(nblks):
@@ -71,6 +78,7 @@ class Cache:
             if self.pool[lba_replaced]:
                 self.disk.write(lba_replaced)
             self.pool.pop(lba_replaced, None)
+            self.prefetched.pop(lba_replaced, None)
 
     def is_cacheable(self, pid, lba, is_read):
         return True

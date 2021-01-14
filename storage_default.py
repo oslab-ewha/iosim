@@ -39,5 +39,10 @@ class StorageDefault:
     def report(self):
         print("Req Read:{}, Req Write:{}".format(self.n_accs_read, self.n_accs_write))
         print("# of prefetch: {}".format(self.n_prefetch))
+        if self.n_prefetch != 0:
+            hit = self.cache.n_hits_prefetch / self.n_prefetch * 100
+        else:
+            hit = 0
+        print("Prefetch Accuracy : {}%({}/{})".format(format(hit, ".2f"), self.cache.n_hits_prefetch, self.n_prefetch))
         self.cache.report()
         self.disk.report()
