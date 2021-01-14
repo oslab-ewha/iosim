@@ -1,4 +1,7 @@
 *~
 *.pyc
 *.csv
+*.txt
+*.model
+*.trace
 /__pycache__
