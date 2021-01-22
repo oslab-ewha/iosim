@@ -50,12 +50,18 @@ class Cache:
             if self.is_cacheable(pid, lba, False):
                 if not lba in self.pool:
                     self.replace_cache(pid, lba)
-                if self.is_writethrough(pid, lba):
-                    self.disk.write(lba)
-                else:
-                    self.pool[lba] = True
+                self.__update_cache(pid, lba)
             else:
-                self.disk.write(lba)
+                if lba in self.pool:
+                    self.__update_cache(pid, lba)
+                else:
+                    self.disk.write(lba)
+
+    def __update_cache(self, pid, lba):
+        self.pool[lba] = True
+        if self.is_writethrough(pid, lba):
+            self.disk.write(lba)
+            self.pool[lba] = False
 
     def __insert(self, lba):
         lba_replaced = 0
@@ -81,6 +87,8 @@ class Cache:
             self.prefetched.pop(lba_replaced, None)
 
     def is_cacheable(self, pid, lba, is_read):
+        if not is_read:
+            return False
         return True
 
     def is_writethrough(self, pid, lba):
