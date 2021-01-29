@@ -16,52 +16,67 @@ class Cache:
     def flush(self):
         for lba in self.pool:
             if self.pool[lba]:
-                self.disk.write(lba)
+                self.disk.write(1, lba, lba+1)
         self.pool = {}
         self.n_blks_cached = 0
 
     def load(self, pid, lba_base, nblks):
+        n_cache_hit = 0
+        n_disk_io = 0
         for i in range(nblks):
             lba = lba_base + i
             if lba in self.pool:
                 self.policy.hit(lba)
                 self.n_hits += 1
+                n_cache_hit += 1
                 if lba in self.prefetched:
                     if not self.prefetched[lba]:
                         self.prefetched[lba] = True
                         self.n_hits_prefetch += 1
-            else:
+            else:                                           # disk access
                 self.n_miss += 1
-                self.disk.read(lba)
+                n_disk_io += 1
                 if self.is_cacheable(pid, lba, True):
-                    self.replace_cache(pid, lba)
+                    n_disk_io += self.replace_cache(pid, lba)
+        return n_cache_hit, n_disk_io
+
 
     def prefetch(self, pid, lba_base, nblks):
+        n_cache_hit = 0
+        n_disk_io = 0
         for i in range(nblks):
             lba = lba_base + i
             if not lba in self.pool:
-                self.disk.read(lba)
-                self.replace_cache(pid, lba)
+                n_disk_io += 1
+                n_disk_io += self.replace_cache(pid, lba)
                 self.prefetched[lba] = False
+            else:
+                n_cache_hit += 1
+        return n_cache_hit, n_disk_io
 
     def store(self, pid, lba_base, nblks):
+        n_cache_hit = 0
+        n_disk_io = 0
         for i in range(nblks):
             lba = lba_base + i
             if self.is_cacheable(pid, lba, False):
                 if not lba in self.pool:
-                    self.replace_cache(pid, lba)
-                self.__update_cache(pid, lba)
+                    n_disk_io += self.replace_cache(pid, lba)
+                n_disk_io += self.__update_cache(pid, lba)
             else:
                 if lba in self.pool:
-                    self.__update_cache(pid, lba)
-                else:
-                    self.disk.write(lba)
+                    n_cache_hit += 1
+                    n_disk_io += self.__update_cache(pid, lba)
+                else:                                       # disk access
+                    n_disk_io += 1
+        return n_cache_hit, n_disk_io
 
     def __update_cache(self, pid, lba):
         self.pool[lba] = True
         if self.is_writethrough(pid, lba):
-            self.disk.write(lba)
             self.pool[lba] = False
+            return 1
+        return 0
 
     def __insert(self, lba):
         lba_replaced = 0
@@ -82,9 +97,12 @@ class Cache:
         lba_replaced = self.__insert(lba)
         if lba_replaced > 0:
             if self.pool[lba_replaced]:
-                self.disk.write(lba_replaced)
+                self.pool.pop(lba_replaced, None)
+                self.prefetched.pop(lba_replaced, None)
+                return 1
             self.pool.pop(lba_replaced, None)
             self.prefetched.pop(lba_replaced, None)
+        return 0
 
     def is_cacheable(self, pid, lba, is_read):
         if not is_read:

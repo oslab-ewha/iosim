@@ -35,4 +35,4 @@ class StorageML(StorageDefault):
         self.cache.score_write = score_write
 
         if score_read[1] > 0.5:
-            self.prefetch(req.pid, req.lba + req.nblks, req.nblks)
+            self.prefetch(req)

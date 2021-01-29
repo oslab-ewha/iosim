@@ -16,7 +16,7 @@ class StorageRuleBased(StorageDefault):
             is_seq = self.__is_sequential(req.lba, self.last_blks)
 
         if is_seq:
-                self.prefetch(req.pid, req.lba + req.nblks, req.nblks)
+                self.prefetch(req)
 
         lba_last = req.lba + req.nblks
         if conf.per_process:

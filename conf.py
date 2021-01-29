@@ -12,6 +12,10 @@ width = 5
 height = 10
 lba_max = 0
 
+time_slot = 1                          # time slot to measure bandwidth
+disk_setup_time = 0.05                 # required time to set up the disk 
+disk_transmission_time = 0.01          # required time to move data between disk and cpu
+
 per_process = False
 
 # rule model

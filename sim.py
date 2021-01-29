@@ -12,9 +12,13 @@ class Simulator:
     def __runSim(self):
         reader = TraceReader()
         stor = storage.get()
-
+        disk = stor.disk
+    
         for req in reader:
+            disk.process_queue(req.ts)
             stor.request(req)
+
+        disk.process_rest()                             # handle rest requests in the disk queue
         stor.flush()
 
         stor.report()  
